@@ -64,7 +64,7 @@ namespace GeneticAlgorithm.Knapsack
                 var newPopulation = new List<KnapsackSolutionVector>();
                 newPopulation.AddRange(population.Take(2));
 
-                for (var i = 0; i < PopulationSize; i++)
+                for (var i = 0; i < PopulationSize * 2; i++)
                 {
                     var x = Randomizer.Next(population.Count);
                     var y = Randomizer.Next(population.Count);
@@ -90,6 +90,7 @@ namespace GeneticAlgorithm.Knapsack
 
                 newPopulation.Sort();
                 newPopulation.Reverse();
+                newPopulation = newPopulation.Take(PopulationSize).ToList();
 
                 if (population.First().CompareTo(newPopulation.First()) == 0)
                 {
@@ -110,7 +111,8 @@ namespace GeneticAlgorithm.Knapsack
 
         public KnapsackSolutionVector SolveAnnealing(KnapsackSolutionVector start)
         {
-            var temperature = Fails * Fails;
+            var Temp = Fails*Fails*Fails;
+            var temperature = Temp;
             var visited = new List<KnapsackSolutionVector>();
             KnapsackSolutionVector tmp = null;
             var i = 1;
@@ -133,10 +135,10 @@ namespace GeneticAlgorithm.Knapsack
                 }
                 else
                 {
-                    visited.Add(Randomizer.Next(Fails * Fails) < temperature ? tmp : visited[i - 1]);
+                    visited.Add(Randomizer.Next(Temp) < temperature ? tmp : visited[i - 1]);
                 }
                 i++;
-                temperature--;
+                temperature = Temp / i;
             }
 
             foreach (var solution in visited)

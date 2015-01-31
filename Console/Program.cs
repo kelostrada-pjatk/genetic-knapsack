@@ -11,7 +11,7 @@ namespace Console
 {
     class Program
     {
-        private const int Seed = 10001;
+        private const int Seed = 1000;
 
         static void Main(string[] args)
         {
