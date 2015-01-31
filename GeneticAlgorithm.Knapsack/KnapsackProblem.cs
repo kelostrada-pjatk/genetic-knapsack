@@ -25,6 +25,7 @@ namespace GeneticAlgorithm.Knapsack
 
             Knapsack = knapsack;
             Fails = 100;
+            MutationChance = 10;
         }
 
         public override KnapsackSolutionVector RandomSolution()
