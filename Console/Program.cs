@@ -11,11 +11,13 @@ namespace Console
 {
     class Program
     {
+        private const int Seed = 10001;
+
         static void Main(string[] args)
         {
-            Randomizer.SetSeed(1000);
+            Randomizer.SetSeed(Seed);
 
-            var problem = new KnapsackProblem(50, 50, new Knapsack(1000.0));
+            var problem = new KnapsackProblem(50, 100, new Knapsack(1000.0));
 
             var population = new List<KnapsackSolutionVector>();
 
@@ -24,9 +26,15 @@ namespace Console
                 population.Add(problem.RandomSolution());
             }
 
-            Trace.WriteLine(problem.Solve(population));
+            Randomizer.SetSeed(Seed);
+            System.Console.WriteLine(problem.Solve(population));
 
-
+            for (var i = 1; i < problem.PopulationSize; i++)
+            {
+                Randomizer.SetSeed(Seed);
+                System.Console.WriteLine(problem.SolveAnnealing(population.Take(i).Last()));
+            }
+            
 
 
 

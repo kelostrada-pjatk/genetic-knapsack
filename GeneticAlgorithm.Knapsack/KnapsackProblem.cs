@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace GeneticAlgorithm.Knapsack
             }
 
             Knapsack = knapsack;
+            Fails = 100;
         }
 
         public override KnapsackSolutionVector RandomSolution()
@@ -33,18 +35,32 @@ namespace GeneticAlgorithm.Knapsack
                 vector[i] = Randomizer.Next(0, 2);
             }
 
+            while (Math.Abs(vector.Value) < 0.0001 && vector.Data.Any(d => d > 0))
+            {
+                var indexes = vector.Data.Select((value, index) => new {Value = value, Index = index})
+                    .Where(c => c.Value == 1).Select(x => x.Index);
+                var enumerable = indexes as IList<int> ?? indexes.ToList();
+                var i = Randomizer.Next(enumerable.Count());
+                var j = enumerable.ElementAt(i);
+                vector[j] = 0;
+            }
+
             return vector;
         }
 
         public KnapsackSolutionVector Solve(List<KnapsackSolutionVector> population)
         {
+            population = population.ToList();
+
             population.Sort();
             population.Reverse();
 
             var fails = 0;
 
-            while (fails < 100)
+            while (fails < Fails)
             {
+                // Trace.WriteLine("Fails: " + fails + ", Vector: " + population.First());
+
                 var newPopulation = new List<KnapsackSolutionVector>();
                 newPopulation.AddRange(population.Take(2));
 
@@ -62,11 +78,11 @@ namespace GeneticAlgorithm.Knapsack
                         child1.Mutation();
                         child2.Mutation();
                     }
-                    if (child1.Value > 0)
+                    if (child1.Value > 0 && !newPopulation.Contains(child1))
                     {
                         newPopulation.Add(child1);
                     }
-                    if (child2.Value > 0)
+                    if (child2.Value > 0 && !newPopulation.Contains(child2))
                     {
                         newPopulation.Add(child2);
                     }
@@ -88,6 +104,50 @@ namespace GeneticAlgorithm.Knapsack
             }
 
             return population.First();
+        }
+
+        public int Fails { get; set; }
+
+        public KnapsackSolutionVector SolveAnnealing(KnapsackSolutionVector start)
+        {
+            var temperature = Fails * Fails;
+            var visited = new List<KnapsackSolutionVector>();
+            KnapsackSolutionVector tmp = null;
+            var i = 1;
+
+            visited.Add(start);
+            while (temperature>0)
+            {
+                //var neighbours = visited[i - 1].GetNeihgbours();
+                //var randIndex = Randomizer.Next(neighbours.Count);
+                //tmp = (KnapsackSolutionVector)neighbours[randIndex];
+                tmp = visited[i - 1].GetRandomNeihgbour();
+                if (tmp == null)
+                {
+                    break;
+                }
+
+                if (tmp.CompareTo(visited[i - 1]) > 0)
+                {
+                    visited.Add(tmp);
+                }
+                else
+                {
+                    visited.Add(Randomizer.Next(Fails * Fails) < temperature ? tmp : visited[i - 1]);
+                }
+                i++;
+                temperature--;
+            }
+
+            foreach (var solution in visited)
+            {
+                if (solution.CompareTo(tmp) > 0)
+                {
+                    tmp = solution;
+                }
+            }
+
+            return tmp;
         }
 
     }

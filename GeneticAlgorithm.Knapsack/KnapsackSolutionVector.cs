@@ -15,12 +15,12 @@ namespace GeneticAlgorithm.Knapsack
         {
         }
 
-        private bool _valueCalculated;
         private double _value;
         private double _weight;
 
-        private void CalculateValue()
+        protected new void CalculateValue()
         {
+            base.CalculateValue();
             var problem = Problem as KnapsackProblem;
             if (problem == null) throw new Exception("Wrong initialization of KnapsackProblem");
             double value = 0;
@@ -33,14 +33,13 @@ namespace GeneticAlgorithm.Knapsack
             }
 
             _value = _weight <= problem.Knapsack.MaxWeight ? value : 0;
-            _valueCalculated = true;
         }
 
         public override double Value
         {
             get
             {
-                if (!_valueCalculated)
+                if (!ValueCalculated)
                 {
                     CalculateValue();
                 }
@@ -52,7 +51,7 @@ namespace GeneticAlgorithm.Knapsack
         {
             get
             {
-                if (!_valueCalculated)
+                if (!ValueCalculated)
                 {
                     CalculateValue();
                 }
@@ -64,6 +63,11 @@ namespace GeneticAlgorithm.Knapsack
         {
             var a = Randomizer.Next(0, Data.Count);
             var b = Randomizer.Next(0, Data.Count);
+            Mutation(a,b);
+        }
+
+        public void Mutation(int a, int b)
+        {
             var temp = Data[a];
             Data[a] = Data[b];
             Data[b] = temp;
@@ -81,7 +85,46 @@ namespace GeneticAlgorithm.Knapsack
 
             return child;
         }
-        
+
+        public override List<ISolutionVector<int>> GetNeihgbours()
+        {
+            var neighbours = new List<ISolutionVector<int>>();
+
+            for (var i = 0; i < Data.Count - 1; i++)
+            {
+                for (var j = i + 1; j < Data.Count; j++)
+                {
+                    var solution = Clone() as KnapsackSolutionVector;
+                    if (solution == null) continue;
+                    solution.Mutation(i, j);
+                    if (!neighbours.Contains(solution) && solution.Value > 0)
+                    {
+                        neighbours.Add(solution);
+                    }
+                }
+            }
+
+            return neighbours;
+        }
+
+        public KnapsackSolutionVector GetRandomNeihgbour()
+        {
+            var i = 1000;
+            while (i > 0)
+            {
+                var neighbour = (KnapsackSolutionVector)Clone();
+                var a = Randomizer.Next(0, Data.Count);
+                var b = Randomizer.Next(0, Data.Count);
+                neighbour.Mutation(a,b);
+                if (neighbour.Value > 0)
+                {
+                    return neighbour;
+                }
+                i--;
+            }
+            return null;
+        }
+
         /// <summary>
         /// Greater means better solution
         /// </summary>
@@ -103,9 +146,26 @@ namespace GeneticAlgorithm.Knapsack
             }
         }
 
+        public override object Clone()
+        {
+            return new KnapsackSolutionVector(Data, Problem as KnapsackProblem);
+        }
+
         public override string ToString()
         {
             return String.Join(", ", Data) + ", Value: " + Value + ", Weight: " + Weight;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var vector = obj as KnapsackSolutionVector;
+            if (vector == null) return false;
+            var equals = true;
+            for (var i = 0; i < Data.Count; i++)
+            {
+                equals &= Data[i] == vector[i];
+            }
+            return equals;
         }
     }
 }
