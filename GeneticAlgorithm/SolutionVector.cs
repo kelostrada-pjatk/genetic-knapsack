@@ -36,7 +36,7 @@ namespace GeneticAlgorithm
             }
         }
 
-        public IGeneticProblem<ISolutionVector<T>, T> Problem { get; protected set; }
+        public IGeneticProblem<ISolutionVector<T>, T> Problem { get; set; }
 
         public abstract int CompareTo(object obj);
 

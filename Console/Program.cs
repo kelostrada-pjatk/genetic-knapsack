@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Console
         {
             Randomizer.SetSeed(Seed);
 
-            var problem = new KnapsackProblem(50, 100, new Knapsack(1000.0));
+            var problem = new KnapsackProblem(20, 10, new Knapsack(600.0));
 
             var population = new List<KnapsackSolutionVector>();
 
@@ -26,18 +27,41 @@ namespace Console
                 population.Add(problem.RandomSolution());
             }
 
-            Randomizer.SetSeed(Seed);
-            System.Console.WriteLine(problem.Solve(population));
+            StreamWriter geneticFile = new StreamWriter("genetic.csv", true);
+            StreamWriter annealingFile = new StreamWriter("annealing.csv", true);
 
-            for (var i = 1; i < problem.PopulationSize; i++)
+            for (var k = 2; k < 100; k+=3)
             {
-                Randomizer.SetSeed(Seed);
-                System.Console.WriteLine(problem.SolveAnnealing(population.Take(i).Last()));
+                for (var j = 100; j >=5; j-=5)
+                {
+                    problem = new KnapsackProblem(20, j, new Knapsack(600.0));
+                    problem.MutationChance = k;
+
+                    population.ForEach(v => v.Problem = problem);
+                    population = population.Take(j).ToList();
+
+                    Randomizer.SetSeed(Seed);
+                    geneticFile.Write("{0:0.00};", problem.Solve(population).Value);
+
+                    
+                    Randomizer.SetSeed(Seed);
+                    var solutionAnnealing = problem.SolveAnnealing(population.First()).Value;
+                    //System.Console.WriteLine("{0:0.00} ", problem.SolveAnnealing(population.Take(i).Last()).Value);
+
+
+                    annealingFile.Write("{0:0.00};", solutionAnnealing);
+
+                    System.Console.WriteLine("{0},{1}", k, j);
+                }
+                geneticFile.WriteLine();
+                annealingFile.WriteLine();
+
+                
             }
+
+            geneticFile.Close();
+            annealingFile.Close();
             
-
-
-
         }
     }
 }

@@ -11,6 +11,7 @@ namespace GeneticAlgorithm.Knapsack
     {
         public List<Item> Items { get; private set; }
         public Knapsack Knapsack { get; private set; }
+        public int MutationChance { get; set; }
 
         public KnapsackProblem(int problemSize, int populationSize, Knapsack knapsack)
             : base(problemSize, populationSize)
@@ -68,7 +69,7 @@ namespace GeneticAlgorithm.Knapsack
                 {
                     var x = Randomizer.Next(population.Count);
                     var y = Randomizer.Next(population.Count);
-                    var isMutating = Randomizer.Next(100) < 5;
+                    var isMutating = Randomizer.Next(100) < MutationChance;
 
                     var child1 = population[x].Crossover(population[y]) as KnapsackSolutionVector;
                     var child2 = population[y].Crossover(population[x]) as KnapsackSolutionVector;
