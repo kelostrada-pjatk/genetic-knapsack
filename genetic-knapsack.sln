@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticAlgorithm", "Genetic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{72FA3CB6-B5E7-4311-AD05-A7478DAFE925}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticAlgorithm.Knapsack", "GeneticAlgorithm.Knapsack\GeneticAlgorithm.Knapsack.csproj", "{D5BE8185-AEF5-43A9-B3B7-326B1027BFA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{72FA3CB6-B5E7-4311-AD05-A7478DAFE925}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72FA3CB6-B5E7-4311-AD05-A7478DAFE925}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72FA3CB6-B5E7-4311-AD05-A7478DAFE925}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5BE8185-AEF5-43A9-B3B7-326B1027BFA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5BE8185-AEF5-43A9-B3B7-326B1027BFA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5BE8185-AEF5-43A9-B3B7-326B1027BFA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5BE8185-AEF5-43A9-B3B7-326B1027BFA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
