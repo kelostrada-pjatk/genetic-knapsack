@@ -16,17 +16,13 @@ namespace Console
 
         static void Main(string[] args)
         {
-            
-
-            
-
             StreamWriter geneticFile = new StreamWriter("genetic.csv", true);
             StreamWriter annealingFile = new StreamWriter("annealing.csv", true);
 
             for (var k = 5; k < 50; k+=2)
             {
                 Randomizer.SetSeed(Seed);
-                var problem = new KnapsackProblem(k, 20, new Knapsack(600.0));
+                var problem = new KnapsackProblem(k, 30, new Knapsack(600.0));
 
                 var population = new List<KnapsackSolutionVector>();
 
